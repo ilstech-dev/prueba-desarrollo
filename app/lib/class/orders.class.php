@@ -33,6 +33,9 @@ class Orders extends DBTools
         if ($data['hora']) {
             $query .= " AND hora LIKE '%{$data['hora']}%'";
         }
+        if ($data['estatus']) {
+            $query .= " AND estatus LIKE '%{$data['estatus']}%'";
+        }
 
         return $this->exec($query);
     }
