@@ -54,7 +54,7 @@ $(function () {
     });
 });
 
-const asyncLoad = (action, data, $resContainer) => {
+var asyncLoad = (action, data, $resContainer) => {
     $.ajax({
         type: 'POST',
         url: action,

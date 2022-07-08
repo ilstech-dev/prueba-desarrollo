@@ -3,7 +3,7 @@
 require_once '../lib/core.lib.php';
 
 if ($GPC['type'] == 'list-orders') { ?>
-    <form class="mb-3" class="filter-form" action="orders_async.php" data-target=".filter-results">
+    <form  class="filter-form" action="orders_async.php" data-target=".filter-results">
         <input type="hidden" name="type" value="filter-orders">
 
         <div class="row mb-3">
@@ -22,13 +22,13 @@ if ($GPC['type'] == 'list-orders') { ?>
             <div class="col-6">
                 <div class="form-group">
                     <label>Salida</label>
-                    <input type="text" class="form-control" name="salida" placeholder="Buscar">
+                    <input type="date" class="form-control" name="salida" placeholder="Buscar">
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label>Retorno</label>
-                    <input type="text" class="form-control" name="retorno" placeholder="Buscar">
+                    <input type="date" class="form-control" name="retorno" placeholder="Buscar">
                 </div>
             </div>
             <div class="col-6">
@@ -41,7 +41,7 @@ if ($GPC['type'] == 'list-orders') { ?>
         <div class="row mb-3 justify-content-between">
             <div class="col-2">
                 <button type="button" class="btn btn-success btn-submit">Buscar</button>
-                <button type="clear" class="btn btn-secondary btn-clear">Limpiar</button>
+                <button type="reset" class="btn btn-secondary btn-clear">Limpiar</button>
             </div>
 
             <div class="col-2 d-flex justify-content-end">
@@ -60,10 +60,10 @@ if ($GPC['type'] == 'list-orders') { ?>
     </div>
 <?php }
 
-if ($GPC['type'] == 'filter-orders') {
+if ($GPC['type'] == 'list-orders') {
     $arrOrders = Orders::getInstance()->getOrders($GPC);
     ?>
-    <table class="table table-striped table-border">
+    <table  class="table table-striped table-border display" style="width:100%">
         <thead>
             <tr>
                 <th>N°</th>
@@ -74,11 +74,12 @@ if ($GPC['type'] == 'filter-orders') {
                 <th>Total</th>
                 <th>Fecha</th>
                 <th>Hora</th>
+                <th>Estatus</th>
                 <th>Acciones</th>
             </tr>
         </thead>
 
-        <tbody>
+        <tbody  class="table table-striped table-bordered">
             <?php if (empty($arrOrders)) : ?>
                 <tr>
                     <td class="text-center" colspan="9">No hay registros</td>
@@ -94,6 +95,7 @@ if ($GPC['type'] == 'filter-orders') {
                         <td><?= $order['total'] ?></td>
                         <td><?= $order['fecha'] ?></td>
                         <td><?= $order['hora'] ?></td>
+                        <td><?= $order['estatus'] ?></td>
                         <td>
                             <button type="button" 
                                     class="btn btn-primary btn-load-async" 
@@ -107,7 +109,11 @@ if ($GPC['type'] == 'filter-orders') {
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
+            <div class="col-md-12 text-center">
+<ul class="pagination pagination-lg pager" id="developer_page"></ul>
+</div>
         </tbody>
+     
     </table>
 <?php }
 
@@ -146,12 +152,12 @@ if ($GPC['type'] == 'record-orders') {
 
                         <div class="form-group">
                             <label>Salida</label>
-                            <input type="text" class="form-control" name="salida" value="<?= $order['salida'] ?>">
+                            <input type="date" class="form-control" name="salida" value="<?= $order['salida'] ?>">
                         </div>
 
                         <div class="form-group">
                             <label>Retorno</label>
-                            <input type="text" class="form-control" name="retorno" value="<?= $order['retorno'] ?>">
+                            <input type="date" class="form-control" name="retorno" value="<?= $order['retorno'] ?>">
                         </div>
 
                         <div class="form-group">
@@ -167,6 +173,18 @@ if ($GPC['type'] == 'record-orders') {
                         <div class="form-group">
                             <label>Hora</label>
                             <input type="text" class="form-control" name="hora" value="<?= $order['hora'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Estatus</label><br>
+                            <select name="estatus" class="form-control col-12" value="<?= $order ['estatus']?>" >\
+                                <option>Seleccion estatus</option>
+                                <option value="0">Activo</option>
+                                <option value="1">En Proceso</option>
+                                <option value="2">Finalizado</option>
+                                <option value="3">Cancelado</option>
+                                <option value="4">Anulado</option>
+                                <option value="5">Prueba</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -194,10 +212,10 @@ if ($GPC['type'] == 'record-orders') {
 <?php }
 
 if ($GPC['type'] == 'save-order') {
-    if (empty($GPC['id'])) {
-        $query = "INSERT INTO orders (origen, destino, salida, retorno, total, fecha, hora) VALUES ('{$GPC['origen']}', '{$GPC['destino']}', '{$GPC['salida']}', '{$GPC['retorno']}', '{$GPC['total']}', '{$GPC['fecha']}', '{$GPC['hora']}')";
+    if (1==1) {
+        $query = "INSERT INTO orders (origen, destino, salida, retorno, total, fecha, hora) VALUES ('{$GPC['origen']}', '{$GPC['destino']}', '{$GPC['salida']}', '{$GPC['retorno']}', '{$GPC['total']}', '{$GPC['fecha']}', '{$GPC['hora']}', estatus = '{$GPC['estatus']}')";
     } else {
-        $query = "UPDATE orders SET origen = '{$GPC['origen']}', destino = '{$GPC['destino']}', salida = '{$GPC['salida']}', retorno = '{$GPC['retorno']}', total = '{$GPC['total']}', fecha = '{$GPC['fecha']}', hora = '{$GPC['hora']}' WHERE id = {$GPC['id']}";
+        $query = "UPDATE orders SET origen = '{$GPC['origen']}', destino = '{$GPC['destino']}', salida = '{$GPC['salida']}', retorno = '{$GPC['retorno']}', total = '{$GPC['total']}', fecha = '{$GPC['fecha']}', hora = '{$GPC['hora']}', estatus = '{$GPC['estatus']}' WHERE id = {$GPC['id']}";
     }
 
     Orders::getInstance()->exec($query);
